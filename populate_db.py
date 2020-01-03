@@ -24,7 +24,8 @@ def clean_names(location: str) -> str:
     return re.findall(PATTERN, location)[0][0]
 
 
-def manipulate_df(df):
+def manipulate_df(file):
+    df = pd.read_csv(file)
     df = df.reset_index(drop=True)
     df = df.drop(df.loc[df['status'] != 'OK'].index)
     df['origin'] = df['origin'].apply(clean_names)
@@ -38,9 +39,8 @@ def manipulate_df(df):
     return df
 
 
-def write_origins(base_dir):
-    locations = os.path.join(base_dir, 'lat_lng.csv')
-    df = pd.read_csv(locations).to_dict(orient='records')
+def write_to_origins_db(file):
+    df = pd.read_csv(file).to_dict(orient='records')
     for loc in df:
         origin = Origins(
             name=loc['name'],
@@ -51,10 +51,11 @@ def write_origins(base_dir):
     print('Finished writing origins')
 
 
-def write_commutes(df):
+def write_to_commutes_db(df):
     names = [i for i in df['origin'].unique() if i[0] != '1']
     for name in names:
         origin_object = Origins.objects.get(name=name)
+        # the time will indicate if the origin is Boston- collecting the commute locations only
         commutes = df.loc[(df['origin'] == name) | (df['destination'] == name)].to_dict(orient='records')
         for comm in commutes:
             new_commute = Commute(
@@ -71,8 +72,6 @@ def write_commutes(df):
 
 if __name__ == '__main__':
     base_dir = os.path.dirname(os.path.realpath(__file__))
-    write_origins(base_dir)
-    file = os.path.join(base_dir, 'commute_info.csv')
-    data = pd.read_csv(file)
-    data = manipulate_df(data)
-    write_commutes(data)
+    write_to_origins_db(os.path.join(base_dir, 'lat_lng.csv'))
+    data = manipulate_df(os.path.join(base_dir, 'clean_mass_data.csv'))
+    write_to_commutes_db(data)

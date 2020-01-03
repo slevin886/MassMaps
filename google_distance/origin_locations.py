@@ -1,3 +1,8 @@
+"""
+These are the locations used to track commute times to/from Boston.
+They are called in 'recurring.py' at the project root.
+"""
+
 origins = [
 'Milton, Massachusetts',
 'Canton, Massachusetts',

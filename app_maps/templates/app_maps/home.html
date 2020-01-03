@@ -20,6 +20,22 @@
             <div id="mapid"></div>
         </div>
     </div>
+    <div class="row">
+        <h5>Efficiency</h5>
+        <div class="col">
+            <h5>Most efficient</h5>
+            <div id="fastest_avg"></div>
+        </div>
+        <div class="col">
+            <h5>Least efficient</h5>
+            <div id="slowest_avg"></div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col">
+            <div id="timePlot"></div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
 
@@ -27,5 +43,11 @@
  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
    crossorigin=""></script>
-<script src="{% static 'app_maps/home.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js"></script>
+<script>
+  let avgCommutes = {{ avg_commutes|safe }};
+  let eveningCommutes = {{ evening_commutes|safe }};
+  {#let morningCommutes = {{ morning_commutes|safe }};#}
+</script>
+<script type="module" src="{% static 'app_maps/home.js' %}"></script>
 {% endblock additional_scripts %}
